@@ -7,7 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
-    .setTitle('MonoRepo ToDo API')
+    .setTitle('ToDo API')
     .setDescription('')
     .setVersion('1.0')
     .build();
