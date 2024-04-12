@@ -4,7 +4,6 @@ import { IsBoolean, IsEmail, IsString, Min } from "class-validator";
 export class User implements Prisma.UserCreateInput {
     id: number
     @IsString()
-    @Min(3)
     name: string
     @IsString()
     surname: string
