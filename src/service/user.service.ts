@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { BaseService } from "./base.service";
 import { PrismaService } from "src/prisma.service";
 import { User } from "src/model";
+import { createHash } from "crypto";
 
 
 @Injectable()
@@ -22,7 +23,7 @@ export class UserService implements BaseService<User> {
 
     async get(id: number): Promise<User> {
         try {
-            return this.prisma.user.findUnique({ where: { id: Number(id) } });
+            return await this.prisma.user.findUnique({ where: { id: Number(id) } });
         } catch (error) {
             throw this.handleError('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -32,9 +33,11 @@ export class UserService implements BaseService<User> {
         var user = await this.prisma.user.findFirst({ where: { email: data.email } });
         if (!user) {
             try {
+                const hashedPassword = createHash('sha256').update(data.password).digest('hex');
+                data.password = hashedPassword;
                 return this.prisma.user.create({ data });
             } catch (error) {
-                throw this.handleError('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+                throw this.handleError(error, HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } else {
             throw this.handleError('User with this email already exists', HttpStatus.CONFLICT);
