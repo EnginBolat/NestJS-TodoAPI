@@ -45,6 +45,7 @@ export class UserService implements BaseService<User> {
     }
 
     async update(id: number, data: User): Promise<User> {
+        var date = new Date();
         try {
             return this.prisma.user.update({
                 where: { id: Number(id) },
@@ -55,7 +56,7 @@ export class UserService implements BaseService<User> {
                     password: data.password,
                     isDeleted: data.isDeleted,
                     createdDate: data.createdDate,
-                    updatedDate: data.updatedDate,
+                    updatedDate: date.getDate().toLocaleString(),
                 }
             })
         } catch (error) {
