@@ -22,12 +22,21 @@ model Todo {
 }
 
 model User {
-  id        Int     @id @default(autoincrement())
-  name      String
-  surname   String
-  email     String
-  password  String
-  isDeleted Boolean @default(false)
+  id          Int     @id @default(autoincrement())
+  name        String
+  surname     String
+  email       String
+  password    String
+  isDeleted   Boolean @default(false)
   createdDate String
   updatedDate String
+  Log         Log[]
+}
+
+model Log {
+  id     Int    @id @default(autoincrement())
+  log    String
+  date   String
+  userId Int?
+  user User?  @relation(fields: [userId], references: [id])
 }
