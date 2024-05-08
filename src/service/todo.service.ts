@@ -1,6 +1,6 @@
 
-import { PrismaService } from "src/prisma.service";
 import { Injectable } from "@nestjs/common";
+import { PrismaService } from "src/prisma.service";
 import { Todo } from '../model/';
 import { BaseService } from "./base.service";
 
@@ -9,27 +9,43 @@ export class TodoService implements BaseService<Todo> {
     constructor(private prisma: PrismaService) { }
 
     async getAll(): Promise<Todo[]> {
-        return this.prisma.todo.findMany({ orderBy: { createdDate: 'asc' } });
+        try {
+            return this.prisma.todo.findMany({ orderBy: { createdDate: 'desc' } });
+        } catch (error) {
+            throw error;
+        }
     }
 
     async get(id: number): Promise<Todo> {
-        return this.prisma.todo.findUnique({ where: { id: Number(id) } });
+        try {
+            return this.prisma.todo.findUnique({ where: { id: Number(id) } });
+        } catch (error) {
+            throw error;
+        }
     }
 
     async create(data: Todo): Promise<Todo> {
-        return this.prisma.todo.create({ data });
+        try {
+            return this.prisma.todo.create({ data });
+        } catch (error) {
+            throw error;
+        }
     }
 
     async update(id: number, data: Todo): Promise<Todo> {
-        return this.prisma.todo.update({
-            where: { id: Number(id) },
-            data: { title: data.title, description: data.description, isDone: data.isDone }
-        })
+        try {
+            return this.prisma.todo.update({
+                where: { id: Number(id) },
+                data: { title: data.title, description: data.description, isDone: data.isDone }
+            })
+        } catch (error) {
+            throw error;
+        }
     }
 
     async delete(id: number): Promise<boolean> {
         try {
-            this.prisma.todo.delete({
+            await this.prisma.todo.delete({
                 where: { id: Number(id) }
             });
             return true
