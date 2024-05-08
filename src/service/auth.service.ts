@@ -1,10 +1,14 @@
 import { OTPResonse, User } from "src/model";
 import { PrismaService } from "src/prisma.service";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { LogService } from "./log.service";
 
 @Injectable()
 export class AuthService {
-    constructor(private prisma: PrismaService) { }
+    constructor(
+        private prisma: PrismaService,
+        private logService: LogService,
+    ) { }
 
     private handleError(error: string, statusCode: HttpStatus): never {
         throw new HttpException(error, statusCode);
@@ -21,6 +25,7 @@ export class AuthService {
             if (!passwordMatch) {
                 return this.handleError("Incorrect email or password", HttpStatus.UNPROCESSABLE_ENTITY);
             }
+            this.logService.createLog(user.id, `${user.name} ${user.surname} user login`)
             return user;
         } catch (error) {
             return this.handleError("Incorrect email or password", HttpStatus.UNPROCESSABLE_ENTITY);
